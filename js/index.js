@@ -12,7 +12,7 @@ $vig.CHARACTERS = [
 ];
 
 $vig.init = function(){
-    $vig.aVig = vigenere = $vig.createvigenereArray($vig.CHARACTERS);
+    var vigenere = $vig.createvigenereArray($vig.CHARACTERS);
     $('button').off().on('click',function(){
         var i, n, d, jThis, action, aSrc, aKey, processedText, vigenere, jDes, jSrc;
         jThis = $(this);
