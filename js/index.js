@@ -21,7 +21,7 @@ $vig.init = function(){
         vigenere = $vig.createvigenereArray($vig.CHARACTERS);
         
         if(action === 'showgrid'){
-            $vig.showvigenereGrid(vigenere);
+            $vig.showVigenereGrid(vigenere);
         }
         else{
             aKey = $('#cipherKey').val();
@@ -98,14 +98,14 @@ $vig.createvigenereArray = function(chars){
     return vig;
 };
 
-$vig.showvigenereGrid = function(vigenere){
+$vig.showVigenereGrid = function(vigenere){
     var i, n, aRow, jGrid = $('#vigeneregrid');
     jGrid.empty();
     for(i = 0; i < vigenere.length; i++){
         aRow = [];
         aRow.push('<tr>');
         for(n = 0; n < vigenere[i].length; n++){
-            aRow.push('<td style="width:22px; height:22px; text-align:center;">');
+            aRow.push('<td style="width:18px; height:18px; text-align:center;">');
             if(vigenere[i][n] === ' '){
                 aRow.push('&nbsp;');
             }
