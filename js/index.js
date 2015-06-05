@@ -5,6 +5,8 @@ var $vig = $vig || {};
 $vig.CHARACTERS = [
     'A','B','C','D','E','F','G','H','I','J','K','L','M',
     'N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+    'a','b','c','d','e','f','g','h','i','j','k','l','m',
+    'n','o','p','q','r','s','t','u','v','w','x','y','z',
     '0','1','2','3','4','5','6','7','8','9',',','_',' ',
     ':',';','@','#','-','/','|','=','\)','\!','\$','\%',
     '\^','\&','\*','\(','\.',',','\'','"','?','\+','\<',
@@ -43,12 +45,12 @@ $vig.init = function(){
             aSrc = aSrc.split('');
             //convert the cipher key into numerical equivlants
             for (i = 0; i < aKey.length; i++){
-                aKey[i] = $.inArray(aKey[i].toUpperCase(),$vig.CHARACTERS)
+                aKey[i] = $.inArray(aKey[i],$vig.CHARACTERS)
             }
             //convert the clear/encrypted text into numerical equivalants
             if(action === 'encrypt'){
                 for (i = 0; i < aSrc.length; i++){
-                    aSrc[i] = $.inArray(aSrc[i].toUpperCase(),$vig.CHARACTERS)
+                    aSrc[i] = $.inArray(aSrc[i],$vig.CHARACTERS)
                 }
             }
             //loop over the clear/encrypted text matching each character with it's appropriate key index
@@ -63,8 +65,8 @@ $vig.init = function(){
                 else{
                     //loop from 0 to $vig.CHARACTERS.length looking for the index that corresponds to the encrypted character we're looking for
                     for(d = 0; d < $vig.CHARACTERS.length; d++){
-                        if(vigenere[aKey[n]][d].toUpperCase() === aSrc[i].toUpperCase()){
-                            processedText += vigenere[0][d].toUpperCase();
+                        if(vigenere[aKey[n]][d] === aSrc[i]){
+                            processedText += vigenere[0][d];
                             break;
                         }
                     }
