@@ -15,7 +15,7 @@ $vig.CHARACTERS = [
 
 $vig.init = function(){
     $('button').off().on('click',function(){
-        var i, n, d, jThis, action, aSrc, aKey, processedText, vigenere, jDes, jSrc;
+        var i, n, d, jThis, action, aSrc, aKey, processedText, vigenere, jDes, jSrc, originalChar;
         jThis = $(this);
         action = jThis.attr('data-action');
         vigenere = $vig.createvigenereArray($vig.CHARACTERS);
@@ -24,14 +24,6 @@ $vig.init = function(){
             $vig.showVigenereGrid(vigenere);
         }
         else{
-            aKey = $('#cipherKey').val();
-            aKey = aKey.split('');
-            if(aKey.length === 0){
-                alert('You must include a cipher key.');
-                return;
-            }
-            processedText = '';
-
             if(action === 'encrypt'){
                 jSrc = $('#clearText');
                 jDes = $('#encryptedText');
@@ -40,17 +32,30 @@ $vig.init = function(){
                 jSrc = $('#encryptedText');
                 jDes = $('#clearText');
             }
+            aKey = $('#cipherKey').val();
+            aKey = aKey.split('');
+            if(aKey.length === 0){
+                jDes.val('ERROR: You must provide a cipher key.');
+                return;
+            }
+            processedText = '';
+
             aSrc = jSrc.val();
             jDes.val('');
             aSrc = aSrc.split('');
             //convert the cipher key into numerical equivlants
             for (i = 0; i < aKey.length; i++){
-                aKey[i] = $.inArray(aKey[i],$vig.CHARACTERS)
+                aKey[i] = $.inArray(aKey[i],$vig.CHARACTERS);
             }
             //convert the clear/encrypted text into numerical equivalants
             if(action === 'encrypt'){
                 for (i = 0; i < aSrc.length; i++){
-                    aSrc[i] = $.inArray(aSrc[i],$vig.CHARACTERS)
+                    originalChar = aSrc[i];
+                    aSrc[i] = $.inArray(aSrc[i],$vig.CHARACTERS);
+                    if(aSrc[i] == -1){
+                        jDes.val('ERROR: Encountered unknown character ' + originalChar);
+                        return;
+                    }
                 }
             }
             //loop over the clear/encrypted text matching each character with it's appropriate key index
