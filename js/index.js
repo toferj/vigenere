@@ -15,9 +15,11 @@ $vig.CHARACTERS = [
 
 $vig.init = function(){
     $('button').off().on('click',function(){
-        var i, n, d, jThis, action, aSrc, aKey, processedText, vigenere, jDes, jSrc, originalChar;
+        var i, n, d, srcStart, srcLimit, jThis, jMessageArea, action, aSrc, aKey, processedText, vigenere, jDes, jSrc, originalChar, DestinationIsClearText;
         jThis = $(this);
         action = jThis.attr('data-action');
+        jMessageArea = $('#messageArea');
+        jMessageArea.empty(); //clearing the message area of any previous messages.
         vigenere = $vig.createvigenereArray($vig.CHARACTERS);
         
         if(action === 'showgrid'){
@@ -25,17 +27,19 @@ $vig.init = function(){
         }
         else{
             if(action === 'encrypt'){
+                DestinationIsClearText = false;
                 jSrc = $('#clearText');
                 jDes = $('#encryptedText');
             }
             else{
+                DestinationIsClearText = true;
                 jSrc = $('#encryptedText');
                 jDes = $('#clearText');
             }
             aKey = $('#cipherKey').val();
             aKey = aKey.split('');
             if(aKey.length === 0){
-                jDes.val('ERROR: You must provide a cipher key.');
+                jMessageArea.empty().append('ERROR[1]: You must provided a cipher key.');
                 return;
             }
             processedText = '';
@@ -53,7 +57,7 @@ $vig.init = function(){
                     originalChar = aSrc[i];
                     aSrc[i] = $.inArray(aSrc[i],$vig.CHARACTERS);
                     if(aSrc[i] == -1){
-                        jDes.val('ERROR: Encountered unknown character ' + originalChar);
+                        jMessageArea.empty().append('ERROR[2]: Encountered unknown character "' + originalChar + '". Click "Show Grid" to see what characters are acceptable.');
                         return;
                     }
                 }
@@ -62,13 +66,31 @@ $vig.init = function(){
             n = 0; 
             // n is the index of the cipher key array. if we reach the end of the cipher key before
             //we reach the end of the clear/encrypted text then we will start n back at 0.
-            for(i = 0; i < aSrc.length; i++){
+            if(action === 'encrypt'){
+                srcStart = 0;
+                srcLimit = aSrc.length;
+                if(aSrc.length === 0){
+                    jMessageArea.empty().append("ERROR[3]: Nothing to encrypt.");
+                    return;
+                }
+            }
+            else{
+                //we need to skip the first 43 characters of the encrypted text assuming that this is the beginning token.
+                //likewise, we skip the last 41 characters of the encrypted text assuming that this is the ending token.
+                srcStart = 43;
+                srcLimit = parseInt((aSrc.length - 41),10);
+                if(aSrc.length === 0){
+                    jMessageArea.empty().append("ERROR[4]: Nothing to decrypt.");
+                    return;
+                }
+            }
+            for(i = srcStart; i < srcLimit; i++){
                 if(action === 'encrypt'){
                     encryptedCharacter = vigenere[aSrc[i]][aKey[n]];
                         processedText += encryptedCharacter;
                 }
                 else{
-                    //loop from 0 to $vig.CHARACTERS.length looking for the index that corresponds to the encrypted character we're looking for
+                    //loop over $vig.CHARACTERS looking for the index that corresponds to the encrypted character we're looking for
                     for(d = 0; d < $vig.CHARACTERS.length; d++){
                         if(vigenere[aKey[n]][d] === aSrc[i]){
                             processedText += vigenere[0][d];
@@ -82,7 +104,12 @@ $vig.init = function(){
                 }
             }
             jSrc.val('');
-            jDes.val(processedText);
+            if(DestinationIsClearText){
+                jDes.val(processedText);
+            }
+            else{
+                jDes.val('---------- BEGIN ENCRYPTED TEXT ----------\n' + processedText + '\n---------- END ENCRYPTED TEXT ----------');
+            }
         }
 
     });
