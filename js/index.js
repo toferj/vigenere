@@ -20,7 +20,7 @@ $vig.init = function(){
         action = jThis.attr('data-action');
         jMessageArea = $('#messageArea');
         jMessageArea.empty(); //clearing the message area of any previous messages.
-        vigenere = $vig.createvigenereArray($vig.CHARACTERS);
+        vigenere = $vig.createVigenereArray($vig.CHARACTERS);
         
         if(action === 'showgrid'){
             $vig.showVigenereGrid(vigenere);
@@ -116,7 +116,7 @@ $vig.init = function(){
     
 };
 
-$vig.createvigenereArray = function(chars){
+$vig.createVigenereArray = function(chars){
     var i, tmp, vig = [], chars = chars.slice();
 
     for (i = 0; i < chars.length; i++){
